@@ -49,7 +49,7 @@ python trainer/split.py \
   --val-size 0.10 \
   --test-size 0.10 \
   --seed 1337 \
-  --stratify-by label
+  --stratify-by label \
   --max-docs 100000
 ```
 

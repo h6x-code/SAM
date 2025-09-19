@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SAM — Sentiment Analysis Machine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- PyScript -->
+  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+  <script type="module" src="https://pyscript.net/latest/pyscript.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>SAM — Sentiment Analysis Machine</h1>
+    <p class="subtitle">All inference runs in your browser. No data leaves this page.</p>
+  </header>
+
+  <main class="container">
+    <nav class="tabs" role="tablist" aria-label="SAM Tabs">
+      <button class="tab active" data-tab="single">Single Review</button>
+      <button class="tab" data-tab="csv">CSV Upload</button>
+    </nav>
+
+    <section id="tab-single" class="tabpanel active" aria-labelledby="single">
+      <div class="card">
+        <label for="single-text">Paste a review:</label>
+        <textarea id="single-text" rows="8" placeholder="Paste or type a Yelp-style review..."></textarea>
+        <div class="row">
+          <button id="analyze-btn">Analyze</button>
+          <label class="chk">
+            <input type="checkbox" id="show-details" checked />
+            <span>Show explanation & aspects</span>
+          </label>
+          <label class="chk">
+            <input type="number" id="neutral-band" min="0" max="0.5" step="0.01" value="0.10" style="width:90px" />
+            <span>Neutral band</span>
+          </label>
+        </div>
+      </div>
+
+      <div id="single-output" class="results"></div>
+    </section>
+
+    <section id="tab-csv" class="tabpanel" aria-labelledby="csv">
+      <div class="card">
+        <label for="csv-file">Upload CSV:</label>
+        <input id="csv-file" type="file" accept=".csv" />
+        <div id="csv-columns" class="row hidden">
+          <label>
+            Review column:
+            <select id="text-col"></select>
+          </label>
+          <label>
+            Optional ID column:
+            <select id="id-col"><option value="">(none)</option></select>
+          </label>
+          <button id="process-btn">Process</button>
+        </div>
+        <div class="row">
+          <label>
+            Chunk size:
+            <input id="chunk-size" type="number" min="100" max="10000" step="100" value="1000" />
+          </label>
+          <label>
+            Neutral band (0–0.5):
+            <input id="csv-neutral-band" type="number" min="0" max="0.5" step="0.01" value="0.10" />
+          </label>
+          <label class="chk">
+            <input type="checkbox" id="show-topk" checked />
+            <span>Include top tokens</span>
+          </label>
+        </div>
+        <div class="progress-wrap">
+          <div id="progress-bar" class="progress-bar" style="width:0%"></div>
+        </div>
+        <div id="csv-status" class="status"></div>
+      </div>
+
+      <div class="card">
+        <button id="download-btn" class="secondary" disabled>Download processed CSV</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>MIT Licensed • Model runs client-side via PyScript/Pyodide</span>
+  </footer>
+
+  <!-- PyScript config: no extra packages; we use stdlib + pyodide.http -->
+  <py-config>
+packages = []
+  </py-config>
+
+  <!-- Load the UI controller (which imports inference, aspects, utils) -->
+  <py-script src="src/ui.py"></py-script>
+
+  <!-- Small tab switcher in JS for snappy UI -->
+  <script>
+    function switchTab(evt){
+      document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+      evt.target.classList.add("active");
+      const target = evt.target.getAttribute("data-tab");
+      document.querySelectorAll(".tabpanel").forEach(p=>p.classList.remove("active"));
+      document.getElementById(`tab-${target}`).classList.add("active");
+    }
+    document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click", switchTab));
+  </script>
+</body>
+</html>

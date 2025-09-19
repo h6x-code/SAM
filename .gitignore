@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.dist/
+build/
+dist/
+.ipynb_checkpoints/
+
+# Envs
+.env
+.venv
+venv/
+env/
+ENV/
+pip-wheel-metadata/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data & local outputs
+app/
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.csv
+*.tsv
+!site/models/*.json   # keep exported artifacts
+
+# PyScript/Pyodide caches (varies by setup)
+site/.pyscript/
+site/.pyodide/
+site/__pycache__/
+
+# Editors
+.vscode/
+.idea/

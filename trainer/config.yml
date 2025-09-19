@@ -1,0 +1,31 @@
+# Paths & data sources
+yelp:
+  reviews_json: "app/data/review.json"  # set this
+  db_path: "data/yelp.db"
+  table: "reviews"
+
+# Training hyperparameters
+train:
+  max_docs: null            # int or null; cap total docs for speed/debug
+  test_size: 0.20
+  stratify: false           # Yelp star distribution is skewed; baseline keeps it simple
+  max_features: 50000
+  ngram_range: [1, 2]
+  min_df: 5
+  max_df: 0.9
+  seed: 123
+
+# Label mapping
+labels:
+  map_stars: {1: neg, 2: neg, 3: neu, 4: pos, 5: pos}
+
+# Export
+export:
+  out_path: "site/models/model.json"
+
+# Preprocess (mirrors browser inference)
+preprocess:
+  lowercase: true
+  token_pattern: "\\b\\w+\\b"   # keep single-char tokens
+  sublinear_tf: false
+  norm: "l2"

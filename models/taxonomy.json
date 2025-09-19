@@ -1,0 +1,34 @@
+{
+  "food_taste": [
+    "tasty", "flavor", "flavour", "bland", "seasoned", "spicy", "savory", "sweet",
+    "overcooked", "undercooked", "burnt", "delicious", "yummy", "freshly made", "mouthwatering"
+  ],
+  "food_freshness": [
+    "fresh", "stale", "cold", "lukewarm", "hot", "soggy", "crispy", "rubbery",
+    "day old", "wilted", "dry", "juicy", "underdone", "spoiled", "off"
+  ],
+  "service": [
+    "server", "waiter", "waitress", "staff", "host", "hostess", "bartender",
+    "attentive", "rude", "friendly", "ignored", "checked on", "helpful", "polite", "snarky"
+  ],
+  "speed": [
+    "slow", "fast", "quick", "wait time", "long wait", "delayed", "rush",
+    "timely", "prompt", "lag", "backed up", "line", "queue", "hold up"
+  ],
+  "price_value": [
+    "pricey", "expensive", "overpriced", "cheap", "affordable", "value", "worth it",
+    "portion size", "small portions", "big portions", "deal", "special", "coupon", "ripoff", "bargain"
+  ],
+  "cleanliness": [
+    "clean", "dirty", "sticky", "gross", "sanitary", "messy", "spotless",
+    "bathroom", "restroom", "tables", "floors", "filthy", "dusty", "smelly"
+  ],
+  "ambiance": [
+    "ambience", "ambiance", "vibe", "cozy", "noisy", "loud", "music",
+    "lighting", "decor", "atmosphere", "romantic", "crowded", "packed", "quiet"
+  ],
+  "location_parking": [
+    "parking", "valet", "lot", "street parking", "metered", "garage",
+    "location", "neighborhood", "area", "easy to find", "hard to find", "walkable", "bus stop", "train", "light rail"
+  ]
+}

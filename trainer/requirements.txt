@@ -1,0 +1,8 @@
+# Trainer deps (use Python 3.10–3.12; 3.11 recommended)
+# NOTE: pandas 2.2.x and scikit-learn 1.4.x do not have stable wheels for Python 3.13.
+# Create a 3.11 venv to avoid building from source.
+
+numpy==1.26.4           ; python_version < "3.13"
+pandas==2.2.2           ; python_version < "3.13"
+scikit-learn==1.4.2     ; python_version < "3.13"
+PyYAML==6.0.1

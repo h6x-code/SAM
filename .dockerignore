@@ -1,0 +1,18 @@
+# keep image lean
+.git
+.venv
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.ipynb_checkpoints
+dist
+build
+
+# large local data (we'll mount it)
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.csv

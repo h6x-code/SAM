@@ -13,7 +13,7 @@ train:
   ngram_range: [1, 2]
   min_df: 5
   max_df: 0.9
-  seed: 123
+  seed: 1337
 
 # Label mapping
 labels:

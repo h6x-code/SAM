@@ -20,10 +20,21 @@
 ## Quickstart
 
 ### 0) Prereqs
-- Python **3.10+**
-- Yelp Open Dataset (the `review.json` file). See: https://www.yelp.com/dataset
+- Python **3.11.9**
+- Yelp Open Dataset (the `data/review.json` file). See: https://www.yelp.com/dataset
 
 ### 1) Create env & install trainer deps
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r trainer/requirements.txt
+```
+
+### 2) Create Train/Val/Test splits
+```bash
+python trainer/split.py \
+  --json app/data/review.json \
+  --outdir data/full \
+  --val-size 0.10 \
+  --test-size 0.10 \
+  --seed 1337 \
+  --stratify-by label

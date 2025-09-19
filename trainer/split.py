@@ -139,12 +139,12 @@ def do_split(
 
 def main():
     ap = argparse.ArgumentParser(description="Create train/val/test splits from review.json")
-    ap.add_argument("--json", required=True, help="Path to Yelp review.json (NDJSON)")
-    ap.add_argument("--outdir", default="data/splits", help="Output directory for JSONL splits")
-    ap.add_argument("--val-size", type=float, default=0.10, help="Validation fraction of total (default 0.10)")
-    ap.add_argument("--test-size", type=float, default=0.10, help="Test fraction of total (default 0.10)")
-    ap.add_argument("--seed", type=int, default=123, help="Random seed")
-    ap.add_argument("--max-docs", type=int, default=None, help="Cap docs for speed (optional)")
+    ap.add_argument('-j', "--json", required=True, help="Path to Yelp review.json (NDJSON)")
+    ap.add_argument('-o', "--outdir", default="data/splits", help="Output directory for JSONL splits")
+    ap.add_argument('-v', "--val-size", type=float, default=0.10, help="Validation fraction of total (default 0.10)")
+    ap.add_argument('-t', "--test-size", type=float, default=0.10, help="Test fraction of total (default 0.10)")
+    ap.add_argument('-s', "--seed", type=int, default=123, help="Random seed")
+    ap.add_argument('-m', "--max-docs", type=int, default=None, help="Cap docs for speed (optional)")
     ap.add_argument("--stratify-by", default="label", choices=["label", "stars", "none"], help="Stratify by mapped label, raw stars, or disable")
     args = ap.parse_args()
 

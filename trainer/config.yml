@@ -1,6 +1,6 @@
 # Paths & data sources
 yelp:
-  reviews_json: "app/data/review.json"  # set this
+  reviews_json: "data/review.json"  # set this
   db_path: "data/yelp.db"
   table: "reviews"
 

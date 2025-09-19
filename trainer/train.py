@@ -7,12 +7,13 @@ Features:
 - Load from: (a) JSONL splits via --train-json/--test-json, OR (b) SQLite, OR (c) raw Yelp NDJSON (review.json).
 - Config-driven preprocessing to match browser inference (token_pattern, ngram_range, lowercase, sublinear_tf, norm).
 - Exports only pure-Python types: vocab, idf, W, b, labels, preprocess config.
+- Model "version" string is controlled by config: export.version
 
 Usage:
-  # A) Stream straight from big JSON (configured in trainer/config.yml)
+  # Stream from big JSON (configured in trainer/config.yml)
   python trainer/train.py --config trainer/config.yml
 
-  # B) Train on pre-made splits (recommended)
+  # Train on pre-made splits (recommended)
   python trainer/train.py --config trainer/config.yml \
          --train-json data/splits/train.jsonl \
          --test-json  data/splits/val.jsonl
@@ -60,6 +61,7 @@ class Config:
 
     # export
     out_path: str
+    version: str  # <-- controls model.json "version"
 
     # preprocess (mirrors browser)
     lowercase: bool
@@ -92,6 +94,7 @@ def load_config(path: str) -> Config:
         seed=int(train.get("seed", 123)),
         map_stars=labels.get("map_stars", {1: "neg", 2: "neg", 3: "neu", 4: "pos", 5: "pos"}),
         out_path=export.get("out_path", "site/models/model.json"),
+        version=str(export.get("version", "sam-1.0.0")),  # default if missing
         lowercase=bool(preprocess.get("lowercase", True)),
         token_pattern=str(preprocess.get("token_pattern", r"\b\w+\b")),
         sublinear_tf=bool(preprocess.get("sublinear_tf", False)),
@@ -103,7 +106,6 @@ def load_config(path: str) -> Config:
 # Data loading
 # ----------------------------
 def iter_yelp_json(path: str) -> Iterable[Dict[str, Any]]:
-    import os
     if os.path.isdir(path):
         raise ValueError(
             f"[train] reviews_json points to a DIRECTORY, not a file: {path}\n"
@@ -203,21 +205,27 @@ def align_xy(df: pd.DataFrame, map_stars: Dict[int, str]) -> Tuple[List[str], np
 # ----------------------------
 def export_model(
     out_path: str,
+    model_version: str,
     vectorizer: TfidfVectorizer,
     clf: LogisticRegression,
     preprocess_cfg: Dict[str, Any],
 ) -> None:
-    vocab = vectorizer.vocabulary_                       # dict: token -> idx
-    idf = vectorizer.idf_.tolist()                       # list[float], len = V
-    W = clf.coef_.tolist()                               # shape [3, V] for multinomial
-    b = clf.intercept_.tolist()                          # shape [3]
+    # Coerce everything to pure-Python JSON-safe types
+    vocab_raw = vectorizer.vocabulary_  # dict: token -> idx (may contain np.int64)
+    vocab = {str(k): int(v) for k, v in vocab_raw.items()}
+    idf = [float(x) for x in vectorizer.idf_.tolist()]
+    W = [[float(x) for x in row] for row in clf.coef_.tolist()]
+    b = [float(x) for x in clf.intercept_.tolist()]
+
+    ngram_range = preprocess_cfg.get("ngram_range", (1, 2))
+    ngram_list = [int(ngram_range[0]), int(ngram_range[1])]
 
     payload = {
-        "version": "sam-1.0.0",
+        "version": str(model_version),
         "preprocess": {
             "lowercase": bool(preprocess_cfg.get("lowercase", True)),
             "token_pattern": str(preprocess_cfg.get("token_pattern", r"\\b\\w+\\b")),
-            "ngram_range": list(preprocess_cfg.get("ngram_range", (1, 2))),
+            "ngram_range": ngram_list,
             "sublinear_tf": bool(preprocess_cfg.get("sublinear_tf", False)),
             "norm": str(preprocess_cfg.get("norm", "l2")),
         },
@@ -232,12 +240,16 @@ def export_model(
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False)
-    print(f"[export] wrote {out_path} (V={len(vocab):,})")
+    print(f"[export] wrote {out_path} (V={len(vocab):,}) | version={model_version}")
 
 
-def train_and_export(cfg: Config, train_json: Optional[str], test_json: Optional[str], out_override: Optional[str], max_docs_override: Optional[int]) -> None:
-    rng = np.random.RandomState(cfg.seed)
-
+def train_and_export(
+    cfg: Config,
+    train_json: Optional[str],
+    test_json: Optional[str],
+    out_override: Optional[str],
+    max_docs_override: Optional[int],
+) -> None:
     # 1) Load data
     if train_json:
         print(f"[train] Loading TRAIN from {train_json}")
@@ -310,6 +322,7 @@ def train_and_export(cfg: Config, train_json: Optional[str], test_json: Optional
     out_path = out_override or cfg.out_path
     export_model(
         out_path,
+        model_version=cfg.version,
         vectorizer=vec,
         clf=clf,
         preprocess_cfg={

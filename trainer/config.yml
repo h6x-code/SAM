@@ -1,6 +1,6 @@
 # Paths & data sources
 yelp:
-  reviews_json: "data/review.json"  # set this
+  reviews_json: "data/review.json"
   db_path: "data/yelp.db"
   table: "reviews"
 
@@ -21,7 +21,7 @@ labels:
 
 # Export
 export:
-  out_path: "site/models/model.json"
+  out_path: "docs/models/model.json"
 
 # Preprocess (mirrors browser inference)
 preprocess:

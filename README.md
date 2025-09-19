@@ -25,22 +25,12 @@
 
 ### 1) Create env & install trainer deps
 ```bash
+# Starting from the repo root
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r trainer/requirements.txt
 ```
 
 ### 2) Create Train/Val/Test splits
-For the full dataset:
-```bash
-python trainer/split.py \
-  --json data/review.json \
-  --outdir data/full \
-  --val-size 0.10 \
-  --test-size 0.10 \
-  --seed 1337 \
-  --stratify-by label
-```
-
 For a testing subset:
 ```bash
 python trainer/split.py \
@@ -53,3 +43,20 @@ python trainer/split.py \
   --max-docs 100000
 ```
 
+For the full dataset:
+```bash
+python trainer/split.py \
+  --json data/review.json \
+  --outdir data/full \
+  --val-size 0.10 \
+  --test-size 0.10 \
+  --seed 1337 \
+  --stratify-by label
+```
+
+### 3) Train on your split files (deterministic)
+```bash
+python trainer/train.py --config trainer/config.yml \
+  --train-json data/full/train.jsonl \
+  --test-json data/full/val.jsonl
+```

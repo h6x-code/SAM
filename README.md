@@ -1,4 +1,4 @@
-# SAM — Sentiment Analysis Machine (Yelp Edition)
+# SAM — Sentiment Analysis Machine
 
 **Goal:** train a compact Yelp-review sentiment model offline (TF-IDF + multinomial logistic regression), then serve **client-side, Python-in-the-browser** inference via PyScript/Pyodide on GitHub Pages. No servers, no APIs.
 
@@ -30,11 +30,26 @@ pip install -r trainer/requirements.txt
 ```
 
 ### 2) Create Train/Val/Test splits
+For the full dataset:
 ```bash
 python trainer/split.py \
-  --json app/data/review.json \
+  --json data/review.json \
   --outdir data/full \
   --val-size 0.10 \
   --test-size 0.10 \
   --seed 1337 \
   --stratify-by label
+```
+
+For a testing subset:
+```bash
+python trainer/split.py \
+  --json data/review.json \
+  --outdir data/mini \
+  --val-size 0.10 \
+  --test-size 0.10 \
+  --seed 1337 \
+  --stratify-by label
+  --max-docs 100000
+```
+
